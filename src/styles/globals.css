@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@keyframes shimmer-move {
+  100% {
+    left: 100%;
+  }
+}
+
+@theme {
+  --font-inter: var(--font-inter);
+
+  --color-dark-blue: #0b1a2d;
+  --color-blue: #2563eb;
+  --color-blue-hover: #2563ebe6;
+  --color-blue-active: #1e52c2;
+  --color-outline-grey: #94a3b8;
+  --color-input: #e2e8f0;
+  --color-accent: #f1f5f9;
+  --color-accent-active: #e4ecf5;
+  --color-shipit-red: #ea384c;
+
+  --breakpoint-500: 500px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-915: 915px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-1100: 1100px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  --animate-shimmer-move: shimmer-move 1.5s infinite;
+}
+
+@utility standart-padding {
+  padding: 32px;
+}
+
+@utility page-content-padding {
+  padding: 16px 16px 50px 16px;
+}
+
+@utility transition-standart {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Только скролл конкретного контейнера */
+.scroll-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.scroll-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-content::-webkit-scrollbar-thumb {
+  background-color: #38393a;
+  border-radius: 8px;
+}
+
+.scroll-content::-webkit-scrollbar-thumb:hover {
+  background-color: #47494b;
+}
+
+.scroll-content {
+  scrollbar-color: #38393a transparent;
+  scrollbar-width: thin;
+}
