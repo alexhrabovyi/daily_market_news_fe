@@ -6,7 +6,7 @@ const SITE_LINKS = {
   forgot_password: '/forgot-password',
 
   dashboard: '/under_construction',
-  crypto_dashboard: '/under_construction',
+  crypto_dashboard: '/crypto_dashboard',
   stock_dashboard: '/under_construction',
   currency_dashboard: '/under_construction',
 

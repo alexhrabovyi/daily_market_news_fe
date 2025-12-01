@@ -17,7 +17,7 @@ import Button from '@/ui/Button/Button';
 import Dialog from '@/ui/Dialog/Dialog';
 import SkeletonFigure from '@/ui/SkeletonFigure/SkeletonFigure';
 import {
-  Save, User, Mail, Phone,
+  Save, User, Mail,
 } from 'lucide-react';
 import PUBLIC_ASSETS_META from '@/utils/PUBLIC_ASSETS_META';
 import { fistNameLastNameValidator, emailValidator } from '@/utils/validators';

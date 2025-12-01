@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client';
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
@@ -128,6 +130,35 @@ export type UpdateUserProfileSuccessResponse = UserProfile;
 export type UpdateUserProfileFailedResponse = FailedResponse<
   400, Record<keyof UpdateUserProfileFormData, string[]>
 >;
+
+export interface Crypto {
+  id: number,
+  symbol: string,
+  name: string,
+}
+
+export type GetAllCryptosSuccessResponse = Crypto[];
+
+export type GetSubscribedCryptosSuccessResponse = Crypto[];
+
+export interface AddSubscribedCryptoFormData {
+  id: number,
+}
+
+export type AddSubscribedCryptoSuccessResponse = Crypto
+
+export interface DeleteSubscribedCryptoSuccessResponse {
+  status: string,
+}
+
+export interface CryptoPrice {
+  price: number,
+  timestamp: number,
+}
+
+export type GetCrypto24hPricesSuccessResponse = CryptoPrice[];
+
+export type GetCryptoYearlyPricesSuccessResponse = CryptoPrice[];
 
 // export const PAGE_SIZE_QUERY_PARAM_KEY = 'page_size';
 // export const DEFAULT_PAGE_SIZE = 10;
@@ -350,6 +381,74 @@ export const api = createApi({
           }
         },
       }),
+    getAllCryptos: builder.query<GetAllCryptosSuccessResponse, null>({
+      query: () => ({
+        url: '/crypto/get-all-cryptos/',
+        method: 'GET',
+      }),
+    }),
+    getSubscribedCryptos: builder.query<GetSubscribedCryptosSuccessResponse, null>({
+      query: () => ({
+        url: '/crypto/cryptos-in-dashboard/',
+        method: 'GET',
+      }),
+    }),
+    addSubscribedCrypto: builder
+      .mutation<AddSubscribedCryptoSuccessResponse, AddSubscribedCryptoFormData>({
+        query: (addSubscribedCryptoFormData) => ({
+          url: '/crypto/cryptos-in-dashboard/',
+          method: 'POST',
+          body: addSubscribedCryptoFormData,
+        }),
+        async onQueryStarted(_, { queryFulfilled, dispatch }) {
+          try {
+            const { data: addedCrypto } = await queryFulfilled;
+
+            dispatch(api.util.updateQueryData(
+              'getSubscribedCryptos',
+              null,
+              (draft) => {
+                draft.push(addedCrypto);
+                return draft;
+              },
+            ));
+          } catch {
+            // ignore or handle somehow this error
+          }
+        },
+      }),
+    deleteSubscribedCrypto: builder
+      .mutation<DeleteSubscribedCryptoSuccessResponse, number>({
+        query: (id) => ({
+          url: `/crypto/cryptos-in-dashboard/${id}/`,
+          method: 'DELETE',
+        }),
+        async onQueryStarted(id, { queryFulfilled, dispatch }) {
+          const patchResult = dispatch(
+            api.util.updateQueryData('getSubscribedCryptos', null, (draft) => draft.filter((c) => c.id !== id)),
+          );
+
+          try {
+            await queryFulfilled;
+          } catch {
+            patchResult.undo();
+          }
+        },
+      }),
+    getCrypto24hPrices: builder
+      .query<GetCrypto24hPricesSuccessResponse, number>({
+        query: (id) => ({
+          url: `/crypto/get-daily-prices?id=${id}`,
+          method: 'GET',
+        }),
+      }),
+    getCryptoYearlyPrices: builder
+      .query<GetCryptoYearlyPricesSuccessResponse, number>({
+        query: (id) => ({
+          url: `/crypto/get-yearly-prices?id=${id}`,
+          method: 'GET',
+        }),
+      }),
   }),
 });
 
@@ -363,4 +462,10 @@ export const {
   useConfirmPasswordResetMutation,
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
+  useGetAllCryptosQuery,
+  useGetSubscribedCryptosQuery,
+  useAddSubscribedCryptoMutation,
+  useDeleteSubscribedCryptoMutation,
+  useGetCrypto24hPricesQuery,
+  useGetCryptoYearlyPricesQuery,
 } = api;
